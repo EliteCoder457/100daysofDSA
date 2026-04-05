@@ -1,16 +1,23 @@
-struct TreeNode* prev = NULL;
-
 void flatten(struct TreeNode* root) {
-    if (root == NULL) return;
+    struct TreeNode* curr = root;
 
-    // Reverse preorder
-    flatten(root->right);
-    flatten(root->left);
+    while (curr != NULL) {
+        if (curr->left != NULL) {
+            // Find rightmost node of left subtree
+            struct TreeNode* prev = curr->left;
+            while (prev->right != NULL) {
+                prev = prev->right;
+            }
 
-    // Rewire pointers
-    root->right = prev;
-    root->left = NULL;
+            // Attach right subtree
+            prev->right = curr->right;
 
-    // Move prev
-    prev = root;
+            // Move left subtree to right
+            curr->right = curr->left;
+            curr->left = NULL;
+        }
+
+        // Move to next node
+        curr = curr->right;
+    }
 }
